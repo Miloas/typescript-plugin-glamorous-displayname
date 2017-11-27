@@ -1,0 +1,286 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`sample1.ts 1`] = `
+
+File: sample1.ts
+Source code:
+  import g from "glamorous";
+  
+  const MyStyledButton = g.button()
+  
+TypeScript before transform:
+  import g from "glamorous";
+  const MyStyledButton = g.button();
+  
+TypeScript after transform:
+  import g from "glamorous";
+  const MyStyledButton = g.button.withConfig({ displayName: "MyStyledButton" })();
+  
+
+`;
+
+exports[`sample2.ts 1`] = `
+
+File: sample2.ts
+Source code:
+  import g from 'glamorous'
+  
+  const { Div } = g
+  
+TypeScript before transform:
+  import g from "glamorous";
+  const { Div } = g;
+  
+TypeScript after transform:
+  import g from 'glamorous';
+  const { Div } = g;
+  
+
+`;
+
+exports[`sample3.ts 1`] = `
+
+File: sample3.ts
+Source code:
+  import g from 'glamorous'
+  const MySection = g.section({color: 'blue'}, () => ({}))
+  
+TypeScript before transform:
+  import g from "glamorous";
+  const MySection = g.section({ color: "blue" }, () => ({}));
+  
+TypeScript after transform:
+  import g from 'glamorous';
+  const MySection = g.section.withConfig({ displayName: "MySection" })({ color: 'blue' }, () => ({}));
+  
+
+`;
+
+exports[`sample4.ts 1`] = `
+
+File: sample4.ts
+Source code:
+  import React from 'react'
+  import g, { GlamorousComponent } from "glamorous";
+  
+  export default g.button()
+  
+TypeScript before transform:
+  import React from "react";
+  import g, { GlamorousComponent } from "glamorous";
+  export default g.button();
+  
+TypeScript after transform:
+  import React from 'react';
+  import g, { GlamorousComponent } from "glamorous";
+  export default g.button();
+  
+
+`;
+
+exports[`sample5.ts 1`] = `
+
+File: sample5.ts
+Source code:
+  import React from 'react'
+  import g from 'glamorous'
+  class MyThing extends React.PureComponent {}
+  const MyComp = g(MyThing, {rootEl: 'div'})()
+  
+TypeScript before transform:
+  import React from "react";
+  import g from "glamorous";
+  class MyThing extends React.PureComponent {
+  }
+  const MyComp = g(MyThing, { rootEl: "div" })();
+  
+TypeScript after transform:
+  import React from 'react';
+  import g from 'glamorous';
+  class MyThing extends React.PureComponent {
+  }
+  const MyComp = g(MyThing, { rootEl: "div" }).withConfig({ displayName: "MyComp" })();
+  
+
+`;
+
+exports[`sample6.ts 1`] = `
+
+File: sample6.ts
+Source code:
+  import glamorous from 'glamorous'
+  const comps = {
+    Div: glamorous.div()
+  }
+  
+TypeScript before transform:
+  import glamorous from "glamorous";
+  const comps = {
+      Div: glamorous.div()
+  };
+  
+TypeScript after transform:
+  import glamorous from 'glamorous';
+  const comps = {
+      Div: glamorous.div.withConfig({ displayName: "Div" })()
+  };
+  
+
+`;
+
+exports[`sample7.ts 1`] = `
+
+File: sample7.ts
+Source code:
+  import React from 'react'
+  import glamorous from 'glamorous'
+  class MyThing extends React.PureComponent {}
+  const comps = {
+    MyComp: glamorous(MyThing, {rootEl: 'div'})()
+  }
+  
+TypeScript before transform:
+  import React from "react";
+  import glamorous from "glamorous";
+  class MyThing extends React.PureComponent {
+  }
+  const comps = {
+      MyComp: glamorous(MyThing, { rootEl: "div" })()
+  };
+  
+TypeScript after transform:
+  import React from 'react';
+  import glamorous from 'glamorous';
+  class MyThing extends React.PureComponent {
+  }
+  const comps = {
+      MyComp: glamorous(MyThing, { rootEl: "div" }).withConfig({ displayName: "MyComp" })()
+  };
+  
+
+`;
+
+exports[`sample8.ts 1`] = `
+
+File: sample8.ts
+Source code:
+  import glamorous from 'glamorous'
+  const comps: { Div?: any } = {}
+  comps.Div = glamorous.div()
+  
+TypeScript before transform:
+  import glamorous from "glamorous";
+  const comps: {
+      Div?: any;
+  } = {};
+  comps.Div = glamorous.div();
+  
+TypeScript after transform:
+  import glamorous from 'glamorous';
+  const comps: {
+      Div?: any;
+  } = {};
+  comps.Div = glamorous.div.withConfig({ displayName: "comps.Div" })();
+  
+
+`;
+
+exports[`sample9.ts 1`] = `
+
+File: sample9.ts
+Source code:
+  import glamorous from 'glamorous'
+  import React from 'react'
+  class MyThing extends React.PureComponent {}
+  const comps: { Div?: any } = {}
+  comps.Div = glamorous(MyThing, {rootEl: 'div'})()
+  
+TypeScript before transform:
+  import glamorous from "glamorous";
+  import React from "react";
+  class MyThing extends React.PureComponent {
+  }
+  const comps: {
+      Div?: any;
+  } = {};
+  comps.Div = glamorous(MyThing, { rootEl: "div" })();
+  
+TypeScript after transform:
+  import glamorous from 'glamorous';
+  import React from 'react';
+  class MyThing extends React.PureComponent {
+  }
+  const comps: {
+      Div?: any;
+  } = {};
+  comps.Div = glamorous(MyThing, { rootEl: "div" }).withConfig({ displayName: "comps.Div" })();
+  
+
+`;
+
+exports[`sample10.ts 1`] = `
+
+File: sample10.ts
+Source code:
+  import React from 'react'
+  import gl, { GlamorousComponent } from 'glamorous'
+  export const MySection = gl.section()
+  
+TypeScript before transform:
+  import React from "react";
+  import gl, { GlamorousComponent } from "glamorous";
+  export const MySection = gl.section();
+  
+TypeScript after transform:
+  import React from 'react';
+  import gl, { GlamorousComponent } from 'glamorous';
+  export const MySection = gl.section.withConfig({ displayName: "MySection" })();
+  
+
+`;
+
+exports[`sample11.ts 1`] = `
+
+File: sample11.ts
+Source code:
+  import React from 'react'
+  import g from 'glamorous'
+  
+  export const ScenarioChooserDiv = g.div({
+    boxSizing: 'border-box',
+    maxHeight: 'calc(100% - 10px)',
+    position: 'relative',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    bottom: '20%',
+  })
+  
+TypeScript before transform:
+  import React from "react";
+  import g from "glamorous";
+  export const ScenarioChooserDiv = g.div({
+      boxSizing: "border-box",
+      maxHeight: "calc(100% - 10px)",
+      position: "relative",
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      bottom: "20%",
+  });
+  
+TypeScript after transform:
+  import React from 'react';
+  import g from 'glamorous';
+  export const ScenarioChooserDiv = g.div.withConfig({ displayName: "ScenarioChooserDiv" })({
+      boxSizing: 'border-box',
+      maxHeight: 'calc(100% - 10px)',
+      position: 'relative',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      bottom: '20%',
+  });
+  
+
+`;
