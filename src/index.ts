@@ -1,12 +1,24 @@
 import * as ts from 'typescript'
 
+export interface AttributeProp {
+  attributeName: string
+  attributeValue: string
+}
+
 export interface Options {
-  configAttributes(key: string, value: string): void
+  configAttribute(attributeName: string, attributeValue: string): AttributeProp
   getDisplayName(filename: string, bindingName: string | undefined): string | undefined
 }
 
 function defaultGetDisplayName(_filename: string, bindingName: string | undefined): string | undefined {
   return bindingName
+}
+
+function defaultConfigAttribute(attributeName: string, attributeValue: string) {
+  return {
+    attributeName,
+    attributeValue
+  }
 }
 
 // import g from 'glamorous' -> glamorous
@@ -113,18 +125,19 @@ function isChildOfCallExpInPropAssign(node: ts.Node): boolean {
   return false
 }
 
-function createWithDefaultPropsNode(displayName: string): ts.Node {
+function createWithDefaultPropsNode(displayName: string, configAttribute: typeof defaultConfigAttribute): ts.Node {
+  const { attributeName, attributeValue } = configAttribute('data-glamorous', displayName)
   return ts.createVariableDeclaration(
-    `${displayName}.defaultProps`,
+    `${attributeValue}.defaultProps`,
     undefined,
     ts.createObjectLiteral([
-      ts.createPropertyAssignment(ts.createLiteral('data-glamorous'),
+      ts.createPropertyAssignment(ts.createLiteral(attributeName),
       ts.createLiteral(displayName))
     ])
   )
 }
 
-function addDefaultProps(node: ts.Node, aliasGlamorousLibName: string): any {
+function addDefaultProps(node: ts.Node, aliasGlamorousLibName: string, configAttribute: typeof defaultConfigAttribute): any {
   // export const myButton = g.button()
   if (node.kind === ts.SyntaxKind.VariableStatement && node.getChildAt(0).getText() === 'export') {
     const varDecl = node.getChildAt(1).getChildAt(1)
@@ -144,32 +157,32 @@ function addDefaultProps(node: ts.Node, aliasGlamorousLibName: string): any {
       return null
     }
     if (idName === aliasGlamorousLibName) {
-      const newNode = createWithDefaultPropsNode(displayName as string)
+      const newNode = createWithDefaultPropsNode(displayName as string, configAttribute)
       return [node, newNode]
     }
   }
 
-  if (node.kind === ts.SyntaxKind.VariableDeclarationList) {
-    const rightExp = node.getChildAt(1).getChildAt(0)
-    const callExp = rightExp.getChildAt(2) as ts.CallExpression
-    if (callExp.kind !== ts.SyntaxKind.CallExpression) {
-      return null
-    }
-    const idName = ((callExp.expression as ts.PropertyAccessExpression)
-      .expression as ts.Identifier)
-      .escapedText
-    if (idName === aliasGlamorousLibName) {
-      const displayName = (rightExp.getChildAt(0) as ts.Identifier).escapedText
-      const newNode = createWithDefaultPropsNode(displayName as string)
-      console.info(node.getText())
-      return newNode
-    }
-  }
+  // if (node.kind === ts.SyntaxKind.VariableDeclarationList) {
+  //   const rightExp = node.getChildAt(1).getChildAt(0)
+  //   const callExp = rightExp.getChildAt(2) as ts.CallExpression
+  //   if (callExp.kind !== ts.SyntaxKind.CallExpression) {
+  //     return null
+  //   }
+  //   const idName = ((callExp.expression as ts.PropertyAccessExpression)
+  //     .expression as ts.Identifier)
+  //     .escapedText
+  //   if (idName === aliasGlamorousLibName) {
+  //     const displayName = (rightExp.getChildAt(0) as ts.Identifier).escapedText
+  //     const newNode = createWithDefaultPropsNode(displayName as string, configAttribute)
+  //     console.info(node.getText())
+  //     return [node, newNode]
+  //   }
+  // }
   return null
 }
 
 export function createTransformer(options?: Partial<Options>): ts.TransformerFactory<ts.SourceFile>
-export function createTransformer({ getDisplayName = defaultGetDisplayName }: Partial<Options> = {}) {
+export function createTransformer({ getDisplayName = defaultGetDisplayName, configAttribute = defaultConfigAttribute }: Partial<Options> = {}) {
   const transformer: ts.TransformerFactory<ts.SourceFile> = (context) => {
     let aliasGlamorousLibName: string | void
     const visitor: ts.Visitor = (node) => {
@@ -192,7 +205,7 @@ export function createTransformer({ getDisplayName = defaultGetDisplayName }: Pa
         return node
       }
 
-      const t = addDefaultProps(node, aliasGlamorousLibName)
+      const t = addDefaultProps(node, aliasGlamorousLibName, configAttribute)
       if (t) {
         return t
       }
