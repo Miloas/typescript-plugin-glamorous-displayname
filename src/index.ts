@@ -1,6 +1,7 @@
 import * as ts from 'typescript'
 
 export interface Options {
+  configAttributes(key: string, value: string): void
   getDisplayName(filename: string, bindingName: string | undefined): string | undefined
 }
 
@@ -112,6 +113,61 @@ function isChildOfCallExpInPropAssign(node: ts.Node): boolean {
   return false
 }
 
+function createWithDefaultPropsNode(displayName: string): ts.Node {
+  return ts.createVariableDeclaration(
+    `${displayName}.defaultProps`,
+    undefined,
+    ts.createObjectLiteral([
+      ts.createPropertyAssignment(ts.createLiteral('data-glamorous'),
+      ts.createLiteral(displayName))
+    ])
+  )
+}
+
+function addDefaultProps(node: ts.Node, aliasGlamorousLibName: string): any {
+  // export const myButton = g.button()
+  if (node.kind === ts.SyntaxKind.VariableStatement && node.getChildAt(0).getText() === 'export') {
+    const varDecl = node.getChildAt(1).getChildAt(1)
+    const displayName = ((varDecl.getChildAt(0) as ts.VariableDeclaration).name as ts.Identifier).escapedText
+    const varDeclRight = (varDecl.getChildAt(0) as ts.VariableDeclaration).initializer
+    // if (varDeclRight!.kind !== ts.SyntaxKind.CallExpression) {
+    //   return null
+    // }
+    let idName
+    try {
+      idName = (((
+        varDeclRight as ts.CallExpression) // const button = g.button()
+          .expression as ts.PropertyAccessExpression) // g.button()
+            .expression as ts.Identifier) // g
+              .escapedText
+    } catch {
+      return null
+    }
+    if (idName === aliasGlamorousLibName) {
+      const newNode = createWithDefaultPropsNode(displayName as string)
+      return [node, newNode]
+    }
+  }
+
+  if (node.kind === ts.SyntaxKind.VariableDeclarationList) {
+    const rightExp = node.getChildAt(1).getChildAt(0)
+    const callExp = rightExp.getChildAt(2) as ts.CallExpression
+    if (callExp.kind !== ts.SyntaxKind.CallExpression) {
+      return null
+    }
+    const idName = ((callExp.expression as ts.PropertyAccessExpression)
+      .expression as ts.Identifier)
+      .escapedText
+    if (idName === aliasGlamorousLibName) {
+      const displayName = (rightExp.getChildAt(0) as ts.Identifier).escapedText
+      const newNode = createWithDefaultPropsNode(displayName as string)
+      console.info(node.getText())
+      return newNode
+    }
+  }
+  return null
+}
+
 export function createTransformer(options?: Partial<Options>): ts.TransformerFactory<ts.SourceFile>
 export function createTransformer({ getDisplayName = defaultGetDisplayName }: Partial<Options> = {}) {
   const transformer: ts.TransformerFactory<ts.SourceFile> = (context) => {
@@ -134,6 +190,11 @@ export function createTransformer({ getDisplayName = defaultGetDisplayName }: Pa
 
       if (!aliasGlamorousLibName) {
         return node
+      }
+
+      const t = addDefaultProps(node, aliasGlamorousLibName)
+      if (t) {
+        return t
       }
 
       // const MyButton = g.button()

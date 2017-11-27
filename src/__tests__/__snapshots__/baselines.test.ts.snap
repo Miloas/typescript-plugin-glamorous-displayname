@@ -99,7 +99,8 @@ TypeScript after transform:
   import g from 'glamorous';
   class MyThing extends React.PureComponent {
   }
-  export const MyComp = g(MyThing, { rootEl: "div" }).withConfig({ displayName: "MyComp" })();
+  export const MyComp = g(MyThing, { rootEl: "div" })();
+  MyComp.defaultProps = { "data-glamorous": "MyComp" }
   
 
 `;
@@ -234,7 +235,8 @@ TypeScript before transform:
 TypeScript after transform:
   import React from 'react';
   import gl, { GlamorousComponent } from 'glamorous';
-  export const MySection = gl.section.withConfig({ displayName: "MySection" })();
+  export const MySection = gl.section();
+  MySection.defaultProps = { "data-glamorous": "MySection" }
   
 
 `;
@@ -272,15 +274,16 @@ TypeScript before transform:
 TypeScript after transform:
   import React from 'react';
   import g from 'glamorous';
-  export const ScenarioChooserDiv = g.div.withConfig({ displayName: "ScenarioChooserDiv" })({
-      boxSizing: 'border-box',
-      maxHeight: 'calc(100% - 10px)',
-      position: 'relative',
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      bottom: '20%',
+  export const ScenarioChooserDiv = g.div({
+      boxSizing: "border-box",
+      maxHeight: "calc(100% - 10px)",
+      position: "relative",
+      width: "100%",
+      display: "flex",
+      flexDirection: "column",
+      bottom: "20%",
   });
+  ScenarioChooserDiv.defaultProps = { "data-glamorous": "ScenarioChooserDiv" }
   
 
 `;
