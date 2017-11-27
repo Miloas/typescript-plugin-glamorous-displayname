@@ -4,7 +4,7 @@ exports[`sample1.ts 1`] = `
 
 File: sample1.ts
 Source code:
-  import g from "glamorous";
+  import g from 'glamorous'
   
   const MyStyledButton = g.button()
   
@@ -13,7 +13,7 @@ TypeScript before transform:
   const MyStyledButton = g.button();
   
 TypeScript after transform:
-  import g from "glamorous";
+  import g from 'glamorous';
   const MyStyledButton = g.button.withConfig({ displayName: "MyStyledButton" })();
   
 
@@ -25,15 +25,15 @@ File: sample2.ts
 Source code:
   import g from 'glamorous'
   
-  const { Div } = g
+  const { Div } = g, { button } = g
   
 TypeScript before transform:
   import g from "glamorous";
-  const { Div } = g;
+  const { Div } = g, { button } = g;
   
 TypeScript after transform:
   import g from 'glamorous';
-  const { Div } = g;
+  const { Div } = g, { button } = g;
   
 
 `;
@@ -43,7 +43,7 @@ exports[`sample3.ts 1`] = `
 File: sample3.ts
 Source code:
   import g from 'glamorous'
-  const MySection = g.section({color: 'blue'}, () => ({}))
+  const MySection = g.section({ color: 'blue' }, () => ({}))
   
 TypeScript before transform:
   import g from "glamorous";
@@ -61,7 +61,7 @@ exports[`sample4.ts 1`] = `
 File: sample4.ts
 Source code:
   import React from 'react'
-  import g, { GlamorousComponent } from "glamorous";
+  import g, { GlamorousComponent } from 'glamorous'
   
   export default g.button()
   
@@ -72,7 +72,7 @@ TypeScript before transform:
   
 TypeScript after transform:
   import React from 'react';
-  import g, { GlamorousComponent } from "glamorous";
+  import g, { GlamorousComponent } from 'glamorous';
   export default g.button();
   
 
@@ -85,21 +85,21 @@ Source code:
   import React from 'react'
   import g from 'glamorous'
   class MyThing extends React.PureComponent {}
-  const MyComp = g(MyThing, {rootEl: 'div'})()
+  export const MyComp = g(MyThing, { rootEl: 'div' })()
   
 TypeScript before transform:
   import React from "react";
   import g from "glamorous";
   class MyThing extends React.PureComponent {
   }
-  const MyComp = g(MyThing, { rootEl: "div" })();
+  export const MyComp = g(MyThing, { rootEl: "div" })();
   
 TypeScript after transform:
   import React from 'react';
   import g from 'glamorous';
   class MyThing extends React.PureComponent {
   }
-  const MyComp = g(MyThing, { rootEl: "div" }).withConfig({ displayName: "MyComp" })();
+  export const MyComp = g(MyThing, { rootEl: "div" }).withConfig({ displayName: "MyComp" })();
   
 
 `;
@@ -136,7 +136,7 @@ Source code:
   import glamorous from 'glamorous'
   class MyThing extends React.PureComponent {}
   const comps = {
-    MyComp: glamorous(MyThing, {rootEl: 'div'})()
+    MyComp: glamorous(MyThing, { rootEl: 'div' })()
   }
   
 TypeScript before transform:
@@ -193,7 +193,7 @@ Source code:
   import React from 'react'
   class MyThing extends React.PureComponent {}
   const comps: { Div?: any } = {}
-  comps.Div = glamorous(MyThing, {rootEl: 'div'})()
+  comps.Div = glamorous(MyThing, { rootEl: 'div' })()
   
 TypeScript before transform:
   import glamorous from "glamorous";

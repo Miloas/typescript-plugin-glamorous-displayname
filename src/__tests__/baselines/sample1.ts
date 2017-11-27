@@ -1,3 +1,3 @@
-import g from "glamorous";
+import g from 'glamorous'
 
 const MyStyledButton = g.button()

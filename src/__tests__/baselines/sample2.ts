@@ -1,3 +1,3 @@
 import g from 'glamorous'
 
-const { Div } = g
+const { Div } = g, { button } = g

@@ -1,6 +1,6 @@
 {
   "name": "typescript-plugin-glamorous-displayname",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "babel-plugin-glamorous-displayname typescript version",
   "main": "index.js",
   "typings": "index.d.ts",
@@ -20,6 +20,10 @@
     "plugin",
     "glamorous"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Miloas/typescript-plugin-glamorous-displayname"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^21.1.8",

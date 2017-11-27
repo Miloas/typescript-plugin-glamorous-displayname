@@ -137,21 +137,25 @@ export function createTransformer({ getDisplayName = defaultGetDisplayName }: Pa
       }
 
       // const MyButton = g.button()
+      // node: g.button()
       if (isPropAccess(node) && isChildOfCallExpInVarDecl(node)) {
         return createWithConfNodeByNode(node, getDisplayName, aliasGlamorousLibName)
       }
 
       // const MyComp = g(MyThing, {rootEl: 'div'})()
+      // node: g(MyThing, {rootEl: 'div'})
       if (isCallExp(node) && isChildOfCallExpInVarDecl(node)) {
        return createWithConfNodeByNode2(node, getDisplayName, aliasGlamorousLibName)
       }
 
       // { x: g.button() }
+      // node: g.button()
       if (isPropAccess(node) && isChildOfCallExpInPropAssign(node)) {
         return createWithConfNodeByNode(node, getDisplayName, aliasGlamorousLibName)
       }
 
       // { x: g(MyThing, {rootEl: 'div'})() }
+      // node: g(MyThing, {rootEl: 'div'})
       if (isCallExp(node) && isChildOfCallExpInPropAssign(node)) {
         return createWithConfNodeByNode2(node, getDisplayName, aliasGlamorousLibName)
       }
