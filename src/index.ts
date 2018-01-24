@@ -16,7 +16,10 @@ function getImportedLibName(node: ts.Node): string | void {
 // import g from 'glamorous' -> g
 function getAliasGlamorousName(node: ts.Node): string | void {
   if (getImportedLibName(node) === '\'glamorous\'') {
-    return (node as ts.ImportDeclaration).importClause!.name!.escapedText as string
+    const importNode = (node as ts.ImportDeclaration).importClause!
+    if (importNode.name) {
+      return (node as ts.ImportDeclaration).importClause!.name!.escapedText as string
+    }
   }
 }
 
