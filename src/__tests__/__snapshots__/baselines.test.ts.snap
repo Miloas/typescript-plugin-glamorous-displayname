@@ -290,7 +290,7 @@ exports[`sample12.ts 1`] = `
 File: sample12.ts
 Source code:
   import React from 'react'
-  import { Div } from 'glamorous'
+  import g, { Div } from 'glamorous'
   
   export const ScenarioChooserDiv = g.div({
     boxSizing: 'border-box',
@@ -304,7 +304,7 @@ Source code:
   
 TypeScript before transform:
   import React from "react";
-  import { Div } from "glamorous";
+  import g, { Div } from "glamorous";
   export const ScenarioChooserDiv = g.div({
       boxSizing: "border-box",
       maxHeight: "calc(100% - 10px)",
@@ -317,15 +317,15 @@ TypeScript before transform:
   
 TypeScript after transform:
   import React from 'react';
-  import { Div } from 'glamorous';
-  export const ScenarioChooserDiv = g.div({
-      boxSizing: "border-box",
-      maxHeight: "calc(100% - 10px)",
-      position: "relative",
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      bottom: "20%",
+  import g, { Div } from 'glamorous';
+  export const ScenarioChooserDiv = g.div.withConfig({ displayName: "ScenarioChooserDiv" })({
+      boxSizing: 'border-box',
+      maxHeight: 'calc(100% - 10px)',
+      position: 'relative',
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      bottom: '20%',
   });
   
 

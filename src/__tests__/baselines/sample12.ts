@@ -1,5 +1,5 @@
 import React from 'react'
-import { Div } from 'glamorous'
+import g, { Div } from 'glamorous'
 
 export const ScenarioChooserDiv = g.div({
   boxSizing: 'border-box',
