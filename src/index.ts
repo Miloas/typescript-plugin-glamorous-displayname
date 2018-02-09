@@ -2,10 +2,23 @@ import * as ts from 'typescript'
 
 export interface Options {
   getDisplayName(filename: string, bindingName: string | undefined): string | undefined
+  configAttribute: ConfigAttribute
+}
+
+export type ConfigAttribute = (attributeName: string, attributeValue: string) => {
+    attributeName: string
+    attributeValue: string
 }
 
 function defaultGetDisplayName(_filename: string, bindingName: string | undefined): string | undefined {
   return bindingName
+}
+
+function defaultConfigAttribute(attributeName: string, attributeValue: string) {
+  return {
+    attributeName,
+    attributeValue
+  }
 }
 
 // import g from 'glamorous' -> glamorous
@@ -115,8 +128,38 @@ function isChildOfCallExpInPropAssign(node: ts.Node): boolean {
   return false
 }
 
+function createWithDefaultPropsNode(displayName: string, configAttribute: ConfigAttribute) {
+  const { attributeName, attributeValue } = configAttribute('data-glamorous', displayName)
+  return ts.createVariableDeclaration(attributeValue + '.defaultProps', void 0,
+    ts.createObjectLiteral([
+      ts.createPropertyAssignment(
+        ts.createLiteral(attributeName),
+        ts.createLiteral(displayName)
+      )
+    ]))
+}
+
+function addDefaultProps(node: ts.Node, aliasGlamorousLibName: string, configAttribute: ConfigAttribute) {
+    if (node.kind === ts.SyntaxKind.VariableStatement && node.getChildAt(0).getText() === 'export') {
+        const varDecl = node.getChildAt(1).getChildAt(1)
+        const displayName = (varDecl.getChildAt(0) as any).name.escapedText
+        const varDeclRight = (varDecl.getChildAt(0) as any).initializer
+        let idName = void 0
+        try {
+            idName = varDeclRight.expression.expression.escapedText
+        } catch {
+            return null
+        }
+        if (idName === aliasGlamorousLibName) {
+            const newNode = createWithDefaultPropsNode(displayName, configAttribute)
+            return [node, newNode]
+        }
+    }
+    return null
+}
+
 export function createTransformer(options?: Partial<Options>): ts.TransformerFactory<ts.SourceFile>
-export function createTransformer({ getDisplayName = defaultGetDisplayName }: Partial<Options> = {}) {
+    export function createTransformer({ getDisplayName = defaultGetDisplayName, configAttribute = defaultConfigAttribute }: Partial<Options> = {}) {
   const transformer: ts.TransformerFactory<ts.SourceFile> = (context) => {
     let aliasGlamorousLibName: string | void
     const visitor: ts.Visitor = (node) => {
@@ -137,6 +180,11 @@ export function createTransformer({ getDisplayName = defaultGetDisplayName }: Pa
 
       if (!aliasGlamorousLibName) {
         return node
+      }
+
+      const t = addDefaultProps(node, aliasGlamorousLibName, configAttribute)
+      if (t) {
+          return t
       }
 
       // const MyButton = g.button()
