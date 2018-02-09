@@ -1,6 +1,6 @@
 {
   "name": "typescript-plugin-glamorous-displayname",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "babel-plugin-glamorous-displayname typescript version",
   "main": "index.js",
   "typings": "index.d.ts",
